@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/forcolor"
+    tools:context=".MainActivity">
+
+<androidx.recyclerview.widget.RecyclerView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/recyclerview"
+    android:layout_above="@+id/bottomlayout"
+    />
+
+    <TextView
+        android:id="@+id/welcommassage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Hello Friends"
+        android:textColor="#F3F5F6"
+        android:background="@drawable/forcolor"
+        android:textSize="35sp" />
+
+    <RelativeLayout
+        android:id="@+id/bottomlayout"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:padding="8dp"
+        android:layout_alignParentBottom="true">
+
+        <EditText
+            android:id="@+id/editmassage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_toLeftOf="@+id/sendbutton"
+            android:background="@drawable/round_corner"
+            android:hint="Write a massage......"
+            android:padding="15dp" />
+
+        <ImageButton
+            android:id="@+id/sendbutton"
+            android:layout_width="60sp"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="3dp"
+            android:src="@drawable/baseline_send_24" />
+
+
+
+    </RelativeLayout>
+</RelativeLayout>
