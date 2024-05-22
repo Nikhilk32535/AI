@@ -104,7 +104,7 @@ MessageAdapter messageAdapter;
         RequestBody body=RequestBody.create(jsonbody.toString(),JSON);
         Request request=new Request.Builder()
                 .url("https://api.openai.com/v1/chat/completions")
-                .header("Authorization","Bearer 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")
+                .header("Authorization","Bearer $OPENAI_API")
                 .post(body)
                 .build();
 
