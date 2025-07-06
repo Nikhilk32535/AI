@@ -1,51 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
 
+    <!-- Left (Bot) Message -->
     <LinearLayout
+        android:id="@+id/leftChatLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="80dp"
-        android:id="@+id/leftchatview"
-        android:padding="8dp">
+        android:layout_alignParentStart="true"
+        android:orientation="horizontal"
+        android:layout_marginEnd="60dp"
+        android:visibility="gone">
 
-        <TextView
-            android:id="@+id/leftchattextview"
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginEnd="6dp"
+            android:src="@drawable/ic_bot"
+            android:contentDescription="Bot Icon"
+            android:background="@drawable/avatar_circle"
+            android:padding="4dp" />
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="monospace"
-            android:backgroundTint="#4694D3"
-            android:background="@drawable/round_corner"
-            android:textColor="@color/white"
-            android:padding="5dp"
-            android:text=""
-            android:textIsSelectable="true"
-            android:textSize="18sp"/>
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/leftChatTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_bot_bubble"
+                android:textColor="@android:color/black"
+                android:padding="12dp"
+                android:textSize="16sp"
+                android:textIsSelectable="true" />
+
+            <TextView
+                android:id="@+id/leftTimestamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#888"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
     </LinearLayout>
 
+    <!-- Right (User) Message -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/rightChatLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
         android:layout_alignParentEnd="true"
-        android:id="@+id/rightchatview"
-        android:padding="8dp">
+        android:orientation="horizontal"
+        android:layout_marginStart="60dp"
+        android:gravity="end"
+        android:visibility="gone">
 
-        <TextView
-            android:id="@+id/rightchattextview"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="#7BBF2B"
-            android:background="@drawable/round_corner"
-            android:textColor="@color/white"
-            android:padding="5dp"
-            android:text=""
-            android:fontFamily="monospace"
-            android:textIsSelectable="true"
-            android:textSize="18sp"/>
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/rightChatTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_user_bubble"
+                android:textColor="@android:color/black"
+                android:padding="12dp"
+                android:textSize="16sp"
+                android:textIsSelectable="true" />
+
+            <TextView
+                android:id="@+id/rightTimestamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#888"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"
+                android:layout_gravity="end" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="6dp"
+            android:src="@drawable/ic_user"
+            android:contentDescription="User Icon"
+            android:background="@drawable/avatar_circle"
+            android:padding="4dp" />
     </LinearLayout>
-
 </RelativeLayout>

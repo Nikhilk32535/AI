@@ -1,8 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+
+    <!-- Base Theme -->
     <style name="Base.Theme.AI" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- ✅ Set both versions -->
+        <item name="android:statusBarColor">@color/botMessageBg</item>
+
+        <!-- Optional: Navigation bar color -->
+        <item name="android:navigationBarColor">@color/botMessageBg</item>
     </style>
 
     <style name="Theme.AI" parent="Base.Theme.AI" />
