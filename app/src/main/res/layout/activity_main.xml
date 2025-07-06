@@ -5,54 +5,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/forcolor"
+    android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-<androidx.recyclerview.widget.RecyclerView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/recyclerview"
-    android:layout_above="@+id/bottomlayout"
-    />
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottomlayout" />
 
     <RelativeLayout
         android:id="@+id/bottomlayout"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:padding="8dp"
-        android:layout_alignParentBottom="true">
-
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="8dp">
 
         <EditText
             android:id="@+id/editmassage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_toLeftOf="@+id/sendbutton"
+            android:layout_toStartOf="@+id/sendbutton"
             android:background="@drawable/round_corner"
-            android:hint="Write a massage......"
-            android:padding="15dp" />
+            android:hint="Write a message..."
+            android:padding="15dp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp" />
 
         <ImageButton
             android:id="@+id/sendbutton"
-            android:layout_width="60sp"
+            android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignParentEnd="true"
-            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="3dp"
+            android:padding="6dp"
             android:src="@drawable/baseline_send_24" />
 
         <ProgressBar
             android:id="@+id/processbar"
-            android:layout_width="60sp"
+            android:layout_width="60dp"
             android:layout_height="60dp"
             android:visibility="gone"
             android:layout_alignParentEnd="true"
-            android:layout_centerInParent="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="3dp"
-            android:src="@drawable/baseline_send_24" />
-
+            android:layout_centerVertical="true" />
     </RelativeLayout>
 </RelativeLayout>
