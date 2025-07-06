@@ -11,6 +11,7 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -132,29 +133,48 @@ public class MainActivity extends AppCompatActivity {
         setProgressBar(true);
         addToChat("Typing...", Message.SENT_BY_BOT);
 
-        GenerativeModel gm = new GenerativeModel("gemini-pro", BuildConfig.GEMINI_API_KEY);
-        GenerativeModelFutures model = GenerativeModelFutures.from(gm);
-
-        Content content = new Content.Builder().addText(question).build();
         Executor executor = Executors.newSingleThreadExecutor();
 
-        ListenableFuture<GenerateContentResponse> response = model.generateContent(content);
-        Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {
+        String apikey=BuildConfig.GEMINI_API_KEY;
+        GenerativeModel gm = new GenerativeModel("gemini-2.5-pro", apikey);
+        GenerativeModelFutures model = GenerativeModelFutures.from(gm);
+        Log.e("Api_key","apikey is "+apikey);
+        Content content = new Content.Builder()
+                .addText(question)
+                .build();
 
+        ListenableFuture<GenerateContentResponse> response = model.generateContent(content);
+
+        Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {
             @Override
             public void onSuccess(GenerateContentResponse result) {
-                addResponse(result.getText());
+                String resultText = result.getText();
+                addResponse(resultText);
                 setProgressBar(false);
             }
 
             @Override
             public void onFailure(Throwable t) {
                 t.printStackTrace();
-                addResponse("❌ Failed to get a response. Please try again.");
-                setProgressBar(false);
+                runOnUiThread(() -> {
+                    Log.e("Api_key", "Fail :- "+ t.getMessage());
+                    addResponse("❌ Failed to get a response.");
+                    setProgressBar(false);
+                });
             }
         }, executor);
+
+
     }
+
+    private void removeTypingPlaceholder() {
+        int lastIndex = messageList.size() - 1;
+        if (lastIndex >= 0 && messageList.get(lastIndex).getMassage().equals("Typing...")) {
+            messageList.remove(lastIndex);
+            messageAdapter.notifyItemRemoved(lastIndex);
+        }
+    }
+
 
     private boolean isConnectedToInternet() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
