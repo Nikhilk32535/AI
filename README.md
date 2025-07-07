@@ -1,8 +1,4 @@
-Sure! Here's the **complete `README.md` file** you can copy and paste directly into your project root for your **AI Chat App using Java and Gemini API**:
 
----
-
-```markdown
 # 🤖 Nikhil's AI Assistant
 
 **Nikhil's AI Assistant** is a smart and modern Android chat application powered by Google's **Gemini Generative AI API**. It allows users to interact with AI in a conversational interface, with support for exporting conversations, Markdown rendering, and a beautiful, minimal UI.
