@@ -1,19 +1,14 @@
 package com.example.ai;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -22,6 +17,9 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ai.Utility.ChatExportPdfUtils;
+import com.example.ai.Utility.ChatExportUtils;
+import com.example.ai.Utility.Utils;
 import com.google.ai.client.generativeai.GenerativeModel;
 import com.google.ai.client.generativeai.java.GenerativeModelFutures;
 import com.google.ai.client.generativeai.type.Content;
@@ -31,24 +29,22 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
-    // UI Elements
     private RecyclerView recyclerView;
     private EditText messageEditText;
     private ImageButton sendButton;
     private ProgressBar progressBar;
-
-    // Data & Adapter
     private final List<Message> messageList = new ArrayList<>();
     private MessageAdapter messageAdapter;
-
-    // Executor for background tasks
     private final Executor executor = Executors.newSingleThreadExecutor();
 
     @Override
@@ -56,30 +52,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Customize status bar color
         Window window = getWindow();
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.botMessageBg));
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
-        // Setup toolbar with custom MaterialToolbar
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false); // Title is shown in layout
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
-        // Initialize UI elements
         initViews();
 
-        // Initial bot welcome message
-        addToChat("👋👋 Welcome to Nikhil's AI Assistant! I'm here to help. Ask any question!",
+        addToChat("\uD83D\uDC4B\uD83D\uDC4B Welcome to Nikhil's AI Assistant! I'm here to help. Ask any question!",
                 Message.SENT_BY_BOT);
     }
 
-    /**
-     * Initialize view references and configure RecyclerView and adapter.
-     */
     private void initViews() {
         recyclerView = findViewById(R.id.recyclerview);
         messageEditText = findViewById(R.id.editmassage);
@@ -90,11 +79,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(messageAdapter);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setStackFromEnd(true); // New messages come at bottom
+        layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
 
         sendButton.setOnClickListener(v -> {
-            if (!isConnectedToInternet()) {
+            if (!Utils.isConnectedToInternet(this)) {
                 Toast.makeText(this, "Check Internet Connection", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -112,20 +101,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Add a message to the RecyclerView chat list.
-     */
     private void addToChat(String message, String sentBy) {
         runOnUiThread(() -> {
-            messageList.add(new Message(message, sentBy));
+            String timestamp = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date());
+            messageList.add(new Message(message, sentBy, timestamp));
             messageAdapter.notifyItemInserted(messageList.size() - 1);
             recyclerView.scrollToPosition(messageList.size() - 1);
         });
     }
 
-    /**
-     * Show bot response in the chat.
-     */
     private void addResponse(String response) {
         runOnUiThread(() -> {
             removeTypingPlaceholder();
@@ -133,9 +117,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Show/hide loading indicator.
-     */
     private void setProgressBar(boolean show) {
         runOnUiThread(() -> {
             progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
@@ -143,9 +124,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Call Gemini API to get AI-generated response.
-     */
     private void callApi(String question) {
         setProgressBar(true);
         addToChat("Typing...", Message.SENT_BY_BOT);
@@ -154,7 +132,9 @@ public class MainActivity extends AppCompatActivity {
         GenerativeModel gm = new GenerativeModel("gemini-2.5-pro", apiKey);
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
 
-        Content content = new Content.Builder().addText(question).build();
+        String prompt = "Reply concisely. Only give simple answer which is human understandable.\n\nUser: " + question;
+        Content content = new Content.Builder().addText(prompt).build();
+
         ListenableFuture<GenerateContentResponse> response = model.generateContent(content);
 
         Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {
@@ -167,16 +147,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Throwable t) {
-                Log.e("AI Response", "Error: ", t);
                 addResponse("❌ Failed to get a response.");
                 setProgressBar(false);
             }
         }, executor);
     }
 
-    /**
-     * Remove "Typing..." placeholder if exists.
-     */
     private void removeTypingPlaceholder() {
         int lastIndex = messageList.size() - 1;
         if (lastIndex >= 0 && messageList.get(lastIndex).getMassage().equals("Typing...")) {
@@ -185,33 +161,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Check for internet connectivity.
-     */
-    private boolean isConnectedToInternet() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (cm != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Network network = cm.getActiveNetwork();
-                NetworkCapabilities nc = cm.getNetworkCapabilities(network);
-                return nc != null && nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
-            } else {
-                NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-                return networkInfo != null && networkInfo.isConnectedOrConnecting();
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Hide keyboard after sending message.
-     */
     private void hideKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager)
-                    getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    public void showExportOptions(View view) {
+        PopupMenu popup = new PopupMenu(this, view);
+        popup.getMenuInflater().inflate(R.menu.export_menu, popup.getMenu());
+
+        popup.setOnMenuItemClickListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.export_txt) {
+                ChatExportUtils.exportChatAsTxt(this, messageList);
+            } else if (id == R.id.export_pdf) {
+                ChatExportPdfUtils.exportChatAsPdf(this, messageList);
+            }
+
+            return true;
+        });
+
+        popup.show();
     }
 }

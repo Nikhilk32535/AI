@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/export_txt"
+        android:title="Export as TXT" />
+    <item
+        android:id="@+id/export_pdf"
+        android:title="Export as PDF" />
+</menu>
