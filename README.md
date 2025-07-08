@@ -30,6 +30,14 @@
 
 ---
 
+---
+
+## 📥 Download
+
+👉 [Click Here To Download App](https://github.com/Nikhilk32535/AI/releases/download/V1.0/AI.Chat.apk)
+
+---
+
 ## 📂 Project Structure
 
 ```
